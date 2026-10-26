@@ -1,59 +1,88 @@
-# Projeto-Integrador-II
+# Projeto Integrador II - Quadro Kanban - Rotina EMEB
 
-🔧 Análise de Garantias de Pneus
+Aplicação web com banco de dados para organizar o dia a dia de uma comunidade escolar: cadastro de alunos, professores, equipe de apoio e administração, e um quadro interativo (Kanban) para alocar as pessoas nos ambientes (salas de recursos e pátio).
 
-Projeto de análise de dados com foco em solicitações de garantia de pneus, desenvolvido como portfólio para demonstrar habilidades em Python, pandas e visualização de dados.
+Projeto desenvolvido para o Projeto Integrador II da UNIVESP.
 
-📋 Sobre o projeto
+Funcionalidades
+* Cadastro, listagem e remoção de alunos, professores, equipe de apoio e administração
+* Quadro Kanban de organização diária: arrastar e soltar cartões entre os ambientes
+* Alocações do Kanban salvas no banco de dados (continuam no lugar ao recarregar a página)
+* Histórico de observações pedagógicas por aluno (atualmente salvo no navegador)
 
-Este projeto simula um cenário real da indústria de pneus, onde solicitações de garantia são registradas com informações como marca, modelo, condição de defeito, quilometragem e resultado da análise.
-
-O dataset foi gerado com problemas propositais de qualidade de dados — datas inconsistentes, valores nulos, duplicatas e erros lógicos — para demonstrar o processo completo de limpeza e tratamento antes da análise.
-
-
-🎯 Habilidades demonstradas
-
-Extração e carregamento de dados a partir de CSV com pandas
-Limpeza de dados: remoção de duplicatas, padronização de categorias, conversão de tipos, tratamento de nulos e correção de inconsistências lógicas
-Seleção e filtros: recortes por condição, agrupamentos e criação de novas colunas
-Análise exploratória: taxa de aprovação por marca, evolução temporal, distribuição de defeitos e relação entre sulco e resultado
-Visualização: gráficos estáticos com matplotlib/seaborn e dashboard interativo com Plotly
-
-📊 Principais insights
-
-Continental possui a maior taxa de aprovação (~53%), enquanto Michelin tem a menor (~38%) — apesar de ser a marca com mais solicitações
-Falha de fabricação apresenta 79% de aprovação, enquanto Corte por objeto tem 77% de reprovação, refletindo os critérios reais de garantia
-Pneus aprovados têm profundidade média de sulco de 5,12mm vs 4,29mm dos reprovados, sugerindo que defeitos de fabricação tendem a aparecer antes do desgaste avançar
-O volume de solicitações apresenta leve queda entre 2022 e 2024
-
-🗂️ Estrutura do projeto
-
-projeto_pneus/
-│
-├── garantias_pneus.csv       # Dataset com 800 registros fictícios
-├── analise_pneus.ipynb       # Notebook principal com toda a análise
+Tecnologias
+* Backend	Python, Flask, Flask-CORS
+* Banco de dados	SQLite, com Flask-SQLAlchemy (ORM)
+* Frontend	React, Vite, Tailwind CSS
+* Kanban	@hello-pangea/dnd
+  
+Estrutura do projeto
+projeto_integrador/
+├── backend/
+│   ├── app.py              # API Flask e modelos do banco
+│   └── requirements.txt    # dependências Python
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── config.js       # URL da API (variável VITE_API_URL)
+│   │   └── components/     # Kanban, CrudGenerico, CalendarioGlob
+│   └── package.json
 └── README.md
 
-🚀 Como executar
+Banco de dados
+* Cinco tabelas: Aluno, Professor, Equipe e Administracao (cadastros) e AlocacaoDiaria, que se liga a Aluno, Professor e Equipe por chaves estrangeiras (relacionamento 1:N).
 
-Clone o repositório:
+Como rodar localmente
+Pré-requisitos: Python 3.9+, Node.js (LTS) e Git.
+1. Clonar o repositório
 bash
-git clone https://github.com/seu-usuario/analise-garantias-pneus.git
-Abra o notebook no Google Colab ou Jupyter:
+git clone https://github.com/luizaunivesp-prog/Projeto-Integrador-II.git
+cd Projeto-Integrador-II
+2. Backend (terminal 1)
 bash
-jupyter notebook analise_pneus.ipynb
-Execute as células em ordem — todas as dependências são bibliotecas padrão do ambiente (pandas, numpy, matplotlib, seaborn, plotly).
+cd backend
+python -m venv venv
+venv\Scripts\activate          # Windows (PowerShell: .\venv\Scripts\Activate.ps1)
+# source venv/bin/activate     # Mac/Linux
+pip install -r requirements.txt
+python app.py
+O backend sobe em http://localhost:5005 e cria o arquivo do banco automaticamente.
+3. Frontend (terminal 2)
+bash
+cd frontend
+npm install
+npm run dev
+Acesse http://localhost:5173 no navegador.
+Nas próximas vezes, basta ativar o venv e rodar python app.py (backend) e npm run dev (frontend). Não precisa repetir a instalação.
 
-🛠️ Tecnologias utilizadas
+Principais rotas da API
+* Método	Rota	Descrição
+GET	/api/menu	Itens do menu da aplicação
+GET, POST	/api/alunos	Lista e cadastra alunos
+DELETE	/api/alunos/<id>	Remove um aluno
+GET, POST	/api/professores	Lista e cadastra professores
+DELETE	/api/professores/<id>	Remove um professor
+GET, POST	/api/equipe	Lista e cadastra equipe de apoio
+DELETE	/api/equipe/<id>	Remove um membro da equipe
+GET, POST	/api/administracao	Lista e cadastra administração
+DELETE	/api/administracao/<id>	Remove um registro de administração
+GET, POST	/api/alocacoes	Lista (filtro opcional ?data=AAAA-MM-DD) e cria alocações
+DELETE	/api/alocacoes/<id>	Remove uma alocação
 
-Ferramenta	Uso
-Python 3	Linguagem principal
-pandas	Manipulação e limpeza de dados
-numpy	Suporte a cálculos e valores nulos
-matplotlib / seaborn	Visualizações estáticas
-Plotly	Dashboard interativo
-Google Colab	Ambiente de desenvolvimento
+Publicação (deploy)
+* Backend: serviço web (ex.: Render) com Root Directory backend, build pip install -r requirements.txt e start python app.py. Defina FLASK_DEBUG=false.
+* Frontend: Vercel ou Netlify com Root Directory frontend. Defina a variável VITE_API_URL com a URL pública do backend (sem barra no final).
 
-👤 Autor
+Limitações conhecidas e próximos passos
+* Histórico de observações pedagógicas ainda salvo no navegador (migrar para o banco)
+* Sem autenticação de usuários
+* Banco SQLite em hospedagem gratuita pode ser reiniciado (avaliar PostgreSQL)
 
-Desenvolvido como projeto integrador univesp.
+Equipe:
+ALESSANDRO MASSEU, 2015547
+ALINE BENEDICTO SOARES, 24200287
+GABRIELL FELIPPE LEAL BARBOZA, 24220788
+LUAN HENRIQUE CANDIDO DE ARAUJO, 23214291
+LUIZA SANTOS LOPES, 24200047
+RAFAEL RODRIGUES PENA, 24218331
+ROSANGELA GALDINO, 23215076
