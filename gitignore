@@ -1,0 +1,22 @@
+# Ambiente virtual do Python
+backend/venv/
+venv/
+__pycache__/
+*.pyc
+
+# Banco de dados local (cada ambiente cria o seu)
+backend/instance/*.db
+
+# Dependências do Node / build do frontend
+frontend/node_modules/
+frontend/dist/
+
+# Variáveis de ambiente (nunca subir senhas/chaves pro GitHub)
+.env
+.env.local
+frontend/.env
+frontend/.env.local
+
+# Arquivos de sistema/editor
+.DS_Store
+.vscode/
